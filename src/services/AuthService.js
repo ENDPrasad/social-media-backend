@@ -4,15 +4,19 @@ const User = require("../models/UserModel");
 
 const generateToken = require("../utils/generateToken");
 
+const UserService = require("./UserService");
+const { Log } = require("./log");
+
+
 class AuthService {
+
+
+  constructor(){
+    this.userService = new UserService();
+  }
+
   async register(payload) {
     const { name, email, password } = payload;
-
-    const existingUser = await User.findOne({ email });
-
-    if (existingUser) {
-      throw new Error("User already exists");
-    }
 
     const hashedPassword = await bcrypt.hash(password, 10);
 
@@ -34,19 +38,8 @@ class AuthService {
   }
 
   async login(payload) {
-    const { email, password } = payload;
 
-    const user = await User.findOne({ email });
-
-    if (!user) {
-      throw new Error("Invalid credentials");
-    }
-
-    const isPasswordMatched = await bcrypt.compare(password, user.password);
-
-    if (!isPasswordMatched) {
-      throw new Error("Invalid credentials");
-    }
+    const user = await this.userService.authenticateUser(payload);
 
     return {
       user: {

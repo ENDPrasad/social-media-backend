@@ -5,6 +5,7 @@ const router = express.Router();
 const AuthController = require("../../controllers/AuthController");
 
 const validateMiddleware = require("../../middlewares/validateMiddleware");
+const authMiddleware = require("../../middlewares/authMiddleware");
 
 const {
   registerValidation,
@@ -19,12 +20,21 @@ router.post(
   validateMiddleware(registerValidation()),
   async (req, res) => {
     try {
+      const isExistinUser = await authController.existingUser(req.body.email);
+      if (isExistinUser) {
+        return res.status(409).json({
+          success: false,
+          message: "User already exists",
+        });
+      }
+
       const data = await authController.register(req.body);
 
       return res.status(201).json({
         success: true,
         data,
       });
+
     } catch (error) {
       Log.child({
         errorMessage: error.message,
@@ -43,7 +53,15 @@ router.post(
   validateMiddleware(loginValidation()),
   async (req, res) => {
     try {
-      Log.info("validation completed");
+      const isUserExists = await authController.existingUser(req.body.email);
+      
+      if(!isUserExists){
+        return res.status(404).json({
+          success: false,
+          messsage: "User not found"
+        });
+      }
+
       const data = await authController.login(req.body);
 
       return res.status(200).json({
@@ -62,5 +80,6 @@ router.post(
     }
   },
 );
+
 
 module.exports = router;

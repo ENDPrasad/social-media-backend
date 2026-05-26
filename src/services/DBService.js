@@ -2,7 +2,7 @@ const mongoose = require("mongoose");
 const config = require("../config/db");
 
 class DBService {
-  async connect() {
+  static async connect() {
     await mongoose.connect(config.mongoURI);
 
     console.log("MongoDB Connected");
