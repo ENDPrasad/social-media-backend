@@ -28,7 +28,7 @@ describe("Post APIs", () => {
 
     // fetchAllPostStub = sinon.stub(PostController.prototype, "fetchAllPosts");
 
-    getPostByIdStub = sinon.stub(PostController.prototype, "getPostById");
+    // getPostByIdStub = sinon.stub(PostController.prototype, "getPostById");
   });
 
   afterEach(() => {
