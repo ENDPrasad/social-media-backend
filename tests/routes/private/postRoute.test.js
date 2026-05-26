@@ -15,7 +15,7 @@ describe("Post APIs", () => {
 
   let newPostStub;
 
-  let fetchAllPostStub;
+//   let fetchAllPostStub;
 
   let getPostByIdStub;
 
@@ -26,7 +26,7 @@ describe("Post APIs", () => {
 
     newPostStub = sinon.stub(PostController.prototype, "newPost");
 
-    fetchAllPostStub = sinon.stub(PostController.prototype, "fetchAllPosts");
+    // fetchAllPostStub = sinon.stub(PostController.prototype, "fetchAllPosts");
 
     getPostByIdStub = sinon.stub(PostController.prototype, "getPostById");
   });
