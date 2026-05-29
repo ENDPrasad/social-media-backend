@@ -4,7 +4,7 @@
   "main": "index.js",
   "scripts": {
     "dev": "nodemon src/server.js",
-    "test": "mocha \"tests/**/*.test.js\" --exit"
+    "test": "mocha --require tests/routes/setup.js \"tests/**/*.test.js\" --exit"
   },
   "keywords": [],
   "author": "",

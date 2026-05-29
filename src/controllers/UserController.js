@@ -6,8 +6,9 @@ class UserController {
   }
 
   async profile(userId) {
-    return await userService.getProfile(userId);
+    return await this.userService.getProfile(userId);
   }
+
 }
 
 module.exports = UserController;

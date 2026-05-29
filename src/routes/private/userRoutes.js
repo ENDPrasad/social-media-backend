@@ -1,7 +1,8 @@
 const express = require("express");
 const router = express.Router();
-const authMiddleware = require("../../middlewares/authMiddleware");
+const {authMiddleware} = require("../../middlewares/authMiddleware");
 const UserController = require("../../controllers/UserController");
+const {Log} = require("../../services/log")
 
 // Object Initialisation
 
@@ -16,11 +17,16 @@ router.get("/profile", authMiddleware, async (req, res) => {
       data,
     });
   } catch (error) {
+    Log.child({
+      errorMessage: error.message,
+      errorStack: error.stack
+    }).error("Error in /profile route");
     return res.status(400).json({
       success: false,
       message: error.message,
     });
   }
 });
+
 
 module.exports = router;
