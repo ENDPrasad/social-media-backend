@@ -8,13 +8,14 @@ const {
   newPostValidation,
   newCommentValidation,
 } = require("../../validations/PostValidation");
+const {idValidation} = require("../../validations/commonValidation");
 const validateMiddleware = require("../../middlewares/validateMiddleware");
 
 const postController = new PostController();
 const userController = new UserController();
 
 router.post(
-  "/newpost",
+  "/",
   validateMiddleware(newPostValidation()),
   authMiddleware,
   async (req, res) => {
@@ -29,10 +30,10 @@ router.post(
       Log.child({
         errorMessage: error.message,
         errorStack: error.stack,
-      }).error("Error in /newpost route");
+      }).error("Error in POST /posts route");
       return res.status(400).json({
         success: false,
-        message: error.message,
+        message: "Unable to create new post."
       });
     }
   },
@@ -54,10 +55,10 @@ router.get("/", authMiddleware, async (req, res) => {
     Log.child({
       errorMessage: error.message,
       errorStack: error.stack,
-    }).error("Error at / route");
+    }).error("Error at GET /posts route");
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Unable to fetch posts"
     });
   }
 });
@@ -78,15 +79,15 @@ router.get("/me", authMiddleware, setIsMe, async (req, res) => {
     Log.child({
       errorMessage: error.message,
       errorStack: error.stack,
-    }).error("Error at /me router");
+    }).error("Error at GET /me router");
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Unable to fetch posts"
     });
   }
 });
 
-router.post("/:id/likes", authMiddleware, async (req, res) => {
+router.post("/:id/likes", validateMiddleware(idValidation()), authMiddleware, async (req, res) => {
   try {
     const post = await postController.isPostExist(req.params.id);
 
@@ -111,10 +112,10 @@ router.post("/:id/likes", authMiddleware, async (req, res) => {
     Log.child({
       errorMessage: error.message,
       errorStack: error.stack,
-    }).error("Error in /:id/likes route");
+    }).error(`Error in POST /${req.params.id}/likes route`);
     return res.status(500).json({
       success: false,
-      message: error.message,
+      message: "Unable to like post"
     });
   }
 });
@@ -122,6 +123,7 @@ router.post("/:id/likes", authMiddleware, async (req, res) => {
 router.post(
   "/:id/comments",
   validateMiddleware(newCommentValidation()),
+  validateMiddleware(idValidation()),
   authMiddleware,
   async (req, res) => {
     try {
@@ -147,10 +149,10 @@ router.post(
       Log.child({
         errorMessage: error.message,
         errorStack: error.stack,
-      }).error("Error in /:id/comments route");
+      }).error(`Error in POST /${req.params.id}/comments route`);
       return res.status(500).json({
         success: false,
-        message: error.message,
+        message: "Unable to create comment."
       });
     }
   },
@@ -159,6 +161,7 @@ router.post(
 router.patch(
   "/:id",
   validateMiddleware(newPostValidation()),
+  validateMiddleware(idValidation()),
   authMiddleware,
   async (req, res) => {
     try {
@@ -185,10 +188,10 @@ router.patch(
       Log.child({
         errorMessage: error.message,
         errorStack: error.stack,
-      }).error("Error in /:id/comments route");
+      }).error(`Error in /${req.params.id}/comments route`);
       return res.status(500).json({
         success: false,
-        message: error.message,
+        message: "Unable to update comment."
       });
     }
   },

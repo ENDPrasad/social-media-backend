@@ -35,7 +35,7 @@ describe("Post APIs", () => {
     sinon.restore();
   });
 
-  describe("POST /api/posts/newPost", () => {
+  describe("POST /api/posts/", () => {
     it("Should create new post", async () => {
       jwtStub.returns({
         userId: "6a0b4a288165ed66f8b0cf84",
@@ -60,7 +60,7 @@ describe("Post APIs", () => {
       });
 
       const response = await request(app)
-        .post("/api/posts/newPost")
+        .post("/api/posts/")
         .set("Authorization", `Bearer fake-token`)
         .send({
           content: "This is my Secondt post",
